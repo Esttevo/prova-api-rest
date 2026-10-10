@@ -2,12 +2,22 @@ package br.com.avaliacao.api_telemetria.mapper;
 
 import br.com.avaliacao.api_telemetria.dto.MotorRequestDTO;
 import br.com.avaliacao.api_telemetria.dto.MotorResponseDTO;
+import br.com.avaliacao.api_telemetria.entity.AlertaMotor;
 import br.com.avaliacao.api_telemetria.entity.Motor;
 import br.com.avaliacao.api_telemetria.entity.Setor;
 import org.springframework.stereotype.Component;
-
+/**
+ * Motor Mapper que mapeia motor para entidade e dto
+ */
 @Component
 public class MotorMapper {
+
+    /**
+     * Recebe um setor e um motorRequest e converte em entidade motor para fazer o cadastro no banco
+     * @param dto com os dados do motor
+     * @param setor setor buscado no banco para fazer relacionamento
+     * @return {@link Motor} com os dados do dto pronto para ser cadastrado
+     */
     public Motor toEntity(MotorRequestDTO dto, Setor setor) {
         if (dto == null) {
             return null;
@@ -25,6 +35,11 @@ public class MotorMapper {
                 .build();
     }
 
+    /**
+     * Recebe um motor do banco e transforma em MotorResponseDTO par exposição
+     * @param entity entidade motor completa
+     * @return {@link MotorResponseDTO} somente com dados não sensiveis
+     */
     public MotorResponseDTO toDTO(Motor entity) {
         if (entity == null) {
             return null;

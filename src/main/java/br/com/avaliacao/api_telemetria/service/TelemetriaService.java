@@ -1,5 +1,6 @@
 package br.com.avaliacao.api_telemetria.service;
 
+import br.com.avaliacao.api_telemetria.dto.SetorResponseDTO;
 import br.com.avaliacao.api_telemetria.dto.TelemetriaRequestDTO;
 import br.com.avaliacao.api_telemetria.dto.TelemetriaResponseDTO;
 import br.com.avaliacao.api_telemetria.entity.HistoricoTelemetria;
@@ -26,6 +27,12 @@ public class TelemetriaService {
         this.telemetriaMapper = telemetriaMapper;
     }
 
+    /**
+     * Registrar uma telemetria
+     * @param dto dados da telemetria
+     * @return {@link TelemetriaResponseDTO} criada com id gerado pelo banco
+     * @throws EntityNotFoundException caso não encontre motor com id passado
+     */
     @Transactional
     public TelemetriaResponseDTO registrar(TelemetriaRequestDTO dto) {
         Motor motor = motorRepository.findById(dto.motorId())
@@ -37,12 +44,23 @@ public class TelemetriaService {
         return telemetriaMapper.toDTO(salva);
     }
 
+    /**
+     * Listar todos as telemetrias
+     * @param pageable criado na controller
+     * @return {@link Pageable} de todos os {@link TelemetriaResponseDTO}
+     */
     @Transactional(readOnly = true)
     public Page<TelemetriaResponseDTO> listarTodos(Pageable pageable) {
         return telemetriaRepository.findAll(pageable)
                 .map(telemetriaMapper::toDTO);
     }
 
+    /**
+     * Buscar telemetria por id passado
+     * @param id identificador da telemetria a ser buscada
+     * @return {@link TelemetriaResponseDTO} com o id passado
+     * @throws EntityNotFoundException caso nao encontre a telemetria com o id passado
+     */
     @Transactional(readOnly = true)
     public TelemetriaResponseDTO buscarPorId(Long id) {
         return telemetriaRepository.findById(id)
@@ -50,6 +68,13 @@ public class TelemetriaService {
                 .orElseThrow(() -> new EntityNotFoundException("Registro de telemetria não encontrado para o ID: " + id));
     }
 
+    /**
+     * Busca todas as telemetrias relacionadas ao motor pelo id
+     * @param motorId id do motor a ser filtrado
+     * @param pageable criado na controller
+     * @return {@link Pageable} de {@link TelemetriaResponseDTO} que contem o id do motor
+     * @throws EntityNotFoundException caso não exista motor com id passado
+     */
     @Transactional(readOnly = true)
     public Page<TelemetriaResponseDTO> buscarPorMotor(Integer motorId, Pageable pageable) {
         if (!motorRepository.existsById(motorId)) {

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,7 +27,7 @@ import java.net.URI;
 /**
  * Controller que gerencia os endpoints de Alerta Motor
  */
-@Tag(name = "Controller Alerta Motores", description = "Possui os endpoints de alerta motores")
+@Tag(name = "Controller Alerta Motores", description = "Classe que possui os enpooints de alertas motores")
 @RestController
 @RequestMapping("/api/v1/alertas")
 public class AlertaMotorController {
@@ -50,6 +51,7 @@ public class AlertaMotorController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Alerta motor criado com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Motor não encontrado com o id", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor", content = @Content)
     })
 
@@ -76,7 +78,7 @@ public class AlertaMotorController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @GetMapping()
-    public ResponseEntity<Page<AlertaResponseDTO>> listarTodos(@PageableDefault (size = 10, page = 0 )Pageable pageable) {
+    public ResponseEntity<Page<AlertaResponseDTO>> listarTodos(@ParameterObject @PageableDefault (size = 10, page = 0, sort = "id", direction = Sort.Direction.ASC )Pageable pageable) {
         return ResponseEntity.ok().body(alertaMotorService.listarTodos(pageable));
     }
 
@@ -101,7 +103,7 @@ public class AlertaMotorController {
                     description = "Identificador do motor",
                     example = "1"
             )
-            @PathVariable Integer id, @PageableDefault (size = 10, page = 0) Pageable pageable) {
+            @PathVariable Integer id, @ParameterObject @PageableDefault (size = 10, page = 0) Pageable pageable) {
         return ResponseEntity.ok().body(alertaMotorService.buscarPorMotor(id,pageable));
     }
 
@@ -118,9 +120,9 @@ public class AlertaMotorController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Alerta atualizado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "dados invalidos"),
-            @ApiResponse(responseCode = "404", description = "Alerta não encontrado com o id passado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+            @ApiResponse(responseCode = "400", description = "dados invalidos", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Alerta não encontrado com o id passado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content)
     })
     @PatchMapping("/{id}")
     public ResponseEntity<AlertaResponseDTO> atualizarStatusResolucao(
@@ -130,5 +132,10 @@ public class AlertaMotorController {
             )
             @PathVariable  Integer id, @RequestBody @Valid AlertaResolucaoDTO alertaResolucaoDTO) {
         return ResponseEntity.ok().body(alertaMotorService.atualizarStatusResolucao(id, alertaResolucaoDTO));
+    }
+
+    @GetMapping("/filtrar")
+    public ResponseEntity<Page<AlertaResponseDTO>> buscarPorStatus(@RequestParam Boolean status, @ParameterObject @PageableDefault (size = 10, page = 0) Pageable pageable) {
+        return ResponseEntity.ok().body(alertaMotorService.listarPorStatusResolucao(status, pageable));
     }
 }

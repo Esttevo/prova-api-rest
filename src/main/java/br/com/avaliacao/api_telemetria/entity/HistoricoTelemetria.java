@@ -6,6 +6,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Entidade que representa Historico telemetria dentro do sistema
+ */
 @Entity
 @Table(name = "historico_telemetria")
 @Getter

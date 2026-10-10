@@ -13,8 +13,17 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Classe de tratamento de exceções
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    /**
+     * Pega a Exceção {@link EntityNotFoundException} quando lançada em qualquer local do sistema
+     * @param ex exceção lançada com a mensagem persolnalizada
+     * @return {@link ErrorResponseDTO} com status 404 (not_found) e mensagem personalizada na resposta http
+     */
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleNotFound(EntityNotFoundException ex) {
         ErrorResponseDTO error = new ErrorResponseDTO(

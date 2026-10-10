@@ -5,6 +5,10 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entidade que representa Alerta motor dentro do sistema
+ */
+
 @Entity
 @Table(name = "alertas_motores")
 @Getter
